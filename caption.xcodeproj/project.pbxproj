@@ -15,6 +15,14 @@
 		9350495F2DE6C549001E7A72 /* captionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9350495E2DE6C549001E7A72 /* captionTests.swift */; };
 		935049692DE6C549001E7A72 /* captionUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 935049682DE6C549001E7A72 /* captionUITests.swift */; };
 		9350496B2DE6C549001E7A72 /* captionUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9350496A2DE6C549001E7A72 /* captionUITestsLaunchTests.swift */; };
+		935049782DE7D44C001E7A72 /* ClipboardItemRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 935049772DE7D44C001E7A72 /* ClipboardItemRow.swift */; };
+		9350497A2DE7D459001E7A72 /* TagEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 935049792DE7D459001E7A72 /* TagEditorView.swift */; };
+		9350497C2DE7D460001E7A72 /* TagsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9350497B2DE7D460001E7A72 /* TagsView.swift */; };
+		9350497F2DE7D4A8001E7A72 /* TagFilterButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9350497E2DE7D4A8001E7A72 /* TagFilterButton.swift */; };
+		935049812DE7D4AF001E7A72 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 935049802DE7D4AF001E7A72 /* AppDelegate.swift */; };
+		935049832DE7D4B5001E7A72 /* ClipboardManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 935049822DE7D4B5001E7A72 /* ClipboardManager.swift */; };
+		935049862DE7D566001E7A72 /* ClipboardItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 935049842DE7D566001E7A72 /* ClipboardItem.swift */; };
+		935049882DE7D9ED001E7A72 /* ClipboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 935049872DE7D9ED001E7A72 /* ClipboardView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -47,6 +55,14 @@
 		935049642DE6C549001E7A72 /* captionUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = captionUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		935049682DE6C549001E7A72 /* captionUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = captionUITests.swift; sourceTree = "<group>"; };
 		9350496A2DE6C549001E7A72 /* captionUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = captionUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		935049772DE7D44C001E7A72 /* ClipboardItemRow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClipboardItemRow.swift; sourceTree = "<group>"; };
+		935049792DE7D459001E7A72 /* TagEditorView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TagEditorView.swift; sourceTree = "<group>"; };
+		9350497B2DE7D460001E7A72 /* TagsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TagsView.swift; sourceTree = "<group>"; };
+		9350497E2DE7D4A8001E7A72 /* TagFilterButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TagFilterButton.swift; sourceTree = "<group>"; };
+		935049802DE7D4AF001E7A72 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		935049822DE7D4B5001E7A72 /* ClipboardManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClipboardManager.swift; sourceTree = "<group>"; };
+		935049842DE7D566001E7A72 /* ClipboardItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClipboardItem.swift; sourceTree = "<group>"; };
+		935049872DE7D9ED001E7A72 /* ClipboardView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClipboardView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -97,7 +113,11 @@
 		935049492DE6C547001E7A72 /* caption */ = {
 			isa = PBXGroup;
 			children = (
+				935049852DE7D566001E7A72 /* model */,
+				9350497D2DE7D46A001E7A72 /* view */,
 				9350494A2DE6C547001E7A72 /* captionApp.swift */,
+				935049822DE7D4B5001E7A72 /* ClipboardManager.swift */,
+				935049802DE7D4AF001E7A72 /* AppDelegate.swift */,
 				9350494C2DE6C547001E7A72 /* ContentView.swift */,
 				9350494E2DE6C547001E7A72 /* Item.swift */,
 				935049502DE6C549001E7A72 /* Assets.xcassets */,
@@ -130,6 +150,26 @@
 				9350496A2DE6C549001E7A72 /* captionUITestsLaunchTests.swift */,
 			);
 			path = captionUITests;
+			sourceTree = "<group>";
+		};
+		9350497D2DE7D46A001E7A72 /* view */ = {
+			isa = PBXGroup;
+			children = (
+				935049872DE7D9ED001E7A72 /* ClipboardView.swift */,
+				9350497B2DE7D460001E7A72 /* TagsView.swift */,
+				935049772DE7D44C001E7A72 /* ClipboardItemRow.swift */,
+				9350497E2DE7D4A8001E7A72 /* TagFilterButton.swift */,
+				935049792DE7D459001E7A72 /* TagEditorView.swift */,
+			);
+			path = view;
+			sourceTree = "<group>";
+		};
+		935049852DE7D566001E7A72 /* model */ = {
+			isa = PBXGroup;
+			children = (
+				935049842DE7D566001E7A72 /* ClipboardItem.swift */,
+			);
+			path = model;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -262,9 +302,17 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				935049812DE7D4AF001E7A72 /* AppDelegate.swift in Sources */,
+				9350497F2DE7D4A8001E7A72 /* TagFilterButton.swift in Sources */,
+				935049782DE7D44C001E7A72 /* ClipboardItemRow.swift in Sources */,
+				9350497A2DE7D459001E7A72 /* TagEditorView.swift in Sources */,
+				935049832DE7D4B5001E7A72 /* ClipboardManager.swift in Sources */,
+				935049862DE7D566001E7A72 /* ClipboardItem.swift in Sources */,
 				9350494D2DE6C547001E7A72 /* ContentView.swift in Sources */,
 				9350494F2DE6C547001E7A72 /* Item.swift in Sources */,
+				935049882DE7D9ED001E7A72 /* ClipboardView.swift in Sources */,
 				9350494B2DE6C547001E7A72 /* captionApp.swift in Sources */,
+				9350497C2DE7D460001E7A72 /* TagsView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

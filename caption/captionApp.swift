@@ -10,9 +10,11 @@ import SwiftData
 
 @main
 struct captionApp: App {
+    @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
-            Item.self,
+            ClipboardItem.self,
         ])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
 
@@ -24,8 +26,8 @@ struct captionApp: App {
     }()
 
     var body: some Scene {
-        WindowGroup {
-            ContentView()
+        Settings {
+            EmptyView()
         }
         .modelContainer(sharedModelContainer)
     }
