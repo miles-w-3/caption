@@ -83,10 +83,10 @@ struct ClipboardItemRow: View {
             }
             
             // Tags
-            if !item.tags.isEmpty {
+            if !item.tagValues.isEmpty {
                 HStack {
                     Spacer().frame(width: 28) // Align with content
-                    TagsView(tags: item.tags)
+                    TagsView(tags: item.tagValues)
                     Spacer()
                 }
             }

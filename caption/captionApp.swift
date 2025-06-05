@@ -10,7 +10,6 @@ import SwiftData
 
 @main
 struct captionApp: App {
-    @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
@@ -24,11 +23,16 @@ struct captionApp: App {
             fatalError("Could not create ModelContainer: \(error)")
         }
     }()
+    
+    
 
     var body: some Scene {
-        Settings {
-            EmptyView()
+//        Settings {
+//            EmptyView()
+//        }
+        MenuBarExtra("Caption", image: "MenuIcon") {
+            ClipboardView(manager: ClipboardManager(context: sharedModelContainer.mainContext)).modelContainer(sharedModelContainer)
         }
-        .modelContainer(sharedModelContainer)
+        .menuBarExtraStyle(.window)
     }
 }

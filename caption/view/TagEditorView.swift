@@ -115,7 +115,8 @@ struct TagEditorView: View {
         .padding()
         .frame(width: 350, height: 400)
         .onAppear {
-            currentTags = item.tags
+            
+            currentTags = item.tagValues
         }
     }
     

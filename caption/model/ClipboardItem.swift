@@ -9,15 +9,19 @@ import Foundation
 import AppKit
 import SwiftData
 
+struct ItemTag: Codable {
+    let value: String
+}
+
 @Model
 class ClipboardItem {
     @Attribute(.unique) public var id = UUID()
-    let content: String
-    let type: ClipboardItemType
-    let timestamp: Date
-    var tags: [String] = []
+    var content: String
+    var type: ClipboardItemType
+    var timestamp: Date
+    private var tags: [ItemTag]
     // Note: NSImage isn't Codable, so we store as Data
-    private let imageData: Data?
+    private var imageData: Data?
     
     // Computed property to convert Data back to NSImage
     var image: NSImage? {
@@ -25,14 +29,24 @@ class ClipboardItem {
         return NSImage(data: data)
     }
     
+    var tagValues: [String] {
+        return self.tags.map{ $0.value }
+    }
+    
+    func setTags(_ tags: [String]) {
+        self.tags = tags.map{ ItemTag(value: $0) }
+    }
+    
     init(content: String, type: ClipboardItemType, image: NSImage? = nil, tags: [String] = []) {
         self.content = content
         self.type = type
         self.timestamp = Date()
-        self.tags = tags
+        self.tags = tags.map{ ItemTag(value: $0) }
         // Convert NSImage to Data for storage
         self.imageData = image?.tiffRepresentation
     }
+    
+    
     
 }
 

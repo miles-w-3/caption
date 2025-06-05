@@ -11,14 +11,15 @@ import SwiftData
 import SwiftUI
 
 class ClipboardManager: ObservableObject {
-    @Environment(\.modelContext) private var context
+    private var context: ModelContext
     
     private var pasteboard = NSPasteboard.general
     private var timer: Timer?
     private var lastChangeCount: Int = 0
     private let userDefaults = UserDefaults.standard
     
-    init() {
+    init(context: ModelContext) {
+        self.context = context
 //        loadHistory()
         lastChangeCount = pasteboard.changeCount
         startMonitoring()

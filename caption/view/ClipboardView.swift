@@ -13,17 +13,18 @@ struct ClipboardView: View {
     // TODO: I think needed for clipboard management operations
     var manager: ClipboardManager
     
+    @Environment(\.modelContext) private var modelContext
+
     @Query(sort: \ClipboardItem.timestamp, order: .reverse)
     var clipboardHistory: [ClipboardItem]
     
-    @Environment(\.modelContext) private var modelContext
     
     @State private var searchText = ""
     @State private var selectedTags: Set<String> = []
     @State private var showingTagEditor: ClipboardItem?
     
     func getAllTags() -> [String] {
-        let allTags = clipboardHistory.flatMap { $0.tags }
+        let allTags = clipboardHistory.flatMap { $0.tagValues }
         return Array(Set(allTags)).sorted()
     }
     
@@ -38,7 +39,7 @@ struct ClipboardView: View {
         if !selectedTags.isEmpty {
             items = items.filter { item in
                 selectedTags.allSatisfy { tag in
-                    item.tags.contains(tag)
+                    item.tagValues.contains(tag)
                 }
             }
         }
@@ -47,7 +48,7 @@ struct ClipboardView: View {
         if !searchText.isEmpty {
             items = items.filter {
                 $0.content.localizedCaseInsensitiveContains(searchText) ||
-                $0.tags.joined(separator: " ").localizedCaseInsensitiveContains(searchText)
+                $0.tagValues.joined(separator: " ").localizedCaseInsensitiveContains(searchText)
             }
         }
         
@@ -84,7 +85,7 @@ struct ClipboardView: View {
                                 TagFilterButton(
                                     tag: tag,
                                     isSelected: selectedTags.contains(tag),
-                                    count: clipboardHistory.filter { $0.tags.contains(tag) }.count
+                                    count: clipboardHistory.filter { $0.tagValues.contains(tag) }.count
                                 ) {
                                     if selectedTags.contains(tag) {
                                         selectedTags.remove(tag)
@@ -116,11 +117,22 @@ struct ClipboardView: View {
                     Spacer()
                     
                     Button(action: manager.clearHistory) {
-                        Image(systemName: "trash")
+                        Image(systemName: "trash.fill")
                             .foregroundColor(.red)
                     }
                     .buttonStyle(PlainButtonStyle())
                     .help("Clear History")
+                    
+                    Button(
+                        "Quit",
+                        systemImage: "power.circle.fill"
+                    ) {
+                        NSApp.terminate(nil)
+                    }
+                    .labelStyle(.iconOnly)
+                    .buttonStyle(.plain)
+                    .foregroundStyle(.red)
+                    .padding(6)
                 }
                 .padding()
                 .background(Color(NSColor.windowBackgroundColor))
@@ -163,7 +175,8 @@ struct ClipboardView: View {
             }
         }
         .frame(width: 600, height: 500)
-        .sheet(item: $showingTagEditor) { item in
+        // TODO: Make this sheet-like again once the underlying update is fixed
+        .popover(item: $showingTagEditor) { item in
             TagEditorView(item: item, manager: manager, isPresented: .init(
                 get: { showingTagEditor != nil },
                 set: { if !$0 { showingTagEditor = nil } }
