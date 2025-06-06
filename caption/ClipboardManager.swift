@@ -110,13 +110,7 @@ class ClipboardManager: ObservableObject {
     
     // TODO: How do we save these?
     func updateItemTags(_ item: ClipboardItem, tags: [String]) {
-//        // TODO: Does this work?
-//        context.re
-//        item.tags = tags
-//        if let index = clipboardHistory.firstIndex(where: { $0.id == item.id }) {
-//            clipboardHistory[index].tags = tags
-//            saveHistory()
-//        }
+        item.setTags(tags)
     }
     
 //    func getAllTags() -> [String] {

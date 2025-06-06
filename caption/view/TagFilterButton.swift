@@ -29,11 +29,9 @@ struct TagFilterButton: View {
             }
             .padding(.horizontal, 8)
             .padding(.vertical, 4)
-            .background(
-                RoundedRectangle(cornerRadius: 4)
-                    .fill(isSelected ? Color.accentColor : Color.clear)
-            )
-        }
-        .buttonStyle(PlainButtonStyle())
+        }.background(
+            RoundedRectangle(cornerRadius: 6)
+                    .fill(isSelected ? Color.accentColor : Color.gray.opacity(0.1))
+        )
     }
 }
