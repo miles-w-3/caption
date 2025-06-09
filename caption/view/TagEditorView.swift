@@ -15,6 +15,7 @@ struct TagEditorView: View {
     @State private var tagInput = ""
     @State private var currentTags: [String] = []
     
+    // TODO: Make preset tags part of settings
     let commonTags = ["git", "docker", "npm", "ssh", "terminal", "debug", "config", "deploy", "test", "build"]
     
     var body: some View {
@@ -47,7 +48,7 @@ struct TagEditorView: View {
                         .foregroundColor(.secondary)
                         .italic()
                 } else {
-                    TagsView(tags: currentTags)
+                    EditableTagsView(tags: $currentTags)
                 }
             }
             
@@ -94,7 +95,7 @@ struct TagEditorView: View {
             
             // Action buttons
             HStack {
-                Button("Cancel") {
+                Button("Close") {
                     isPresented = false
                 }
                 
@@ -115,7 +116,6 @@ struct TagEditorView: View {
         .padding()
         .frame(width: 350, height: 400)
         .onAppear {
-            
             currentTags = item.tagValues
         }
     }

@@ -9,9 +9,6 @@ import Foundation
 import AppKit
 import SwiftData
 
-struct ItemTag: Codable {
-    let value: String
-}
 
 @Model
 class ClipboardItem {
@@ -45,12 +42,13 @@ class ClipboardItem {
         // Convert NSImage to Data for storage
         self.imageData = image?.tiffRepresentation
     }
-    
-    
-    
 }
 
 enum ClipboardItemType: Codable {
     case text
     case image
+}
+
+struct ItemTag: Codable {
+    let value: String
 }

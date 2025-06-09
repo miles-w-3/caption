@@ -11,7 +11,7 @@ import SwiftData
 
 struct ClipboardView: View {
     // TODO: I think needed for clipboard management operations
-    var manager: ClipboardManager
+    @StateObject var manager: ClipboardManager
     
     @Environment(\.modelContext) private var modelContext
 
@@ -110,12 +110,12 @@ struct ClipboardView: View {
             VStack(spacing: 0) {
                 // Header
                 HStack {
-                    Text("Clipboard Manager")
+                    Text("Caption")
                         .font(.headline)
                         .foregroundColor(.primary)
                     
                     Spacer()
-                    
+                                        
                     Button(action: manager.clearHistory) {
                         Image(systemName: "trash.fill")
                             .foregroundColor(.red)
@@ -136,6 +136,16 @@ struct ClipboardView: View {
                 }
                 .padding()
                 .background(Color(NSColor.windowBackgroundColor))
+                
+                HStack() {
+                    Toggle("Watch clipboard", isOn: $manager.isWatchingClipboard)
+    
+                    Spacer()
+                }
+                .padding(.horizontal)
+                .padding(.vertical, 8)
+                .background(Color(NSColor.windowBackgroundColor))
+           
                 
                 // Search
                 HStack {

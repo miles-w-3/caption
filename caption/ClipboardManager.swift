@@ -14,37 +14,86 @@ class ClipboardManager: ObservableObject {
     private var context: ModelContext
     
     private var pasteboard = NSPasteboard.general
-    private var timer: Timer?
+    private var clipboardTimer: Timer?
+    private var cleanupTimer: Timer?
     private var lastChangeCount: Int = 0
     private let userDefaults = UserDefaults.standard
+    private let cleanupQueue = DispatchQueue(label: "milesw.caption.cleanup", qos: .utility)
+    // TODO: This will eventually be read in from a settings model
+    @Published var isWatchingClipboard = true {
+        // note that this will not trigger on initial assignment, so we start from the constructor
+        didSet {
+            if isWatchingClipboard {
+                startClipboardMonitoring()
+            } else {
+                stopClipboardMonitoring()
+            }
+        }
+    }
     
     init(context: ModelContext) {
         self.context = context
-//        loadHistory()
         lastChangeCount = pasteboard.changeCount
-        startMonitoring()
+        startClipboardMonitoring()
+        startGarbageCollection()
     }
+
     
-    deinit {
-//        saveHistory()
-    }
-    
-//    private func loadHistory() {
-//        if let data = userDefaults.data(forKey: historyKey),
-//           let decoded = try? JSONDecoder().decode([ClipboardItem].self, from: data) {
-//            clipboardHistory = decoded
-//        }
-//    }
-//    
-//    private func saveHistory() {
-//        if let encoded = try? JSONEncoder().encode(clipboardHistory) {
-//            userDefaults.set(encoded, forKey: historyKey)
-//        }
-//    }
-    
-    private func startMonitoring() {
-        timer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { _ in
+    private func startClipboardMonitoring() {
+        print("Beginning clipboard monitoring. Does this happen twice?")
+        guard clipboardTimer == nil else { return }
+        clipboardTimer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { _ in
             self.checkClipboard()
+        }
+    }
+    
+    private func stopClipboardMonitoring() {
+        print("Stopping clipboard monitoring")
+        clipboardTimer?.invalidate()
+        clipboardTimer = nil
+    }
+    
+    private func startGarbageCollection() {
+        cleanupTimer = Timer.scheduledTimer(withTimeInterval: 3600, repeats: true) { [weak self] _ in
+            self?.performCleanupInBackground()
+        }
+    }
+    
+    // cleanup untagged items after 30 days
+    private func performCleanupInBackground() {
+        cleanupQueue.async { [weak self] in
+            guard let self = self else { return }
+            
+            // Create background context for thread-safety
+            let backgroundContext = ModelContext(self.context.container)
+            
+            do {
+                let thirtyDaysAgo = Calendar.current.date(byAdding: .day, value: -30, to: Date()) ?? Date()
+                
+                let descriptor = FetchDescriptor<ClipboardItem>(
+                    predicate: #Predicate { model in
+                        model.timestamp < thirtyDaysAgo && model.tagValues.isEmpty
+                    }
+                )
+                
+                let oldModels = try backgroundContext.fetch(descriptor)
+                
+                for model in oldModels {
+                    backgroundContext.delete(model)
+                }
+                
+                try backgroundContext.save()
+                
+                // Only UI updates need main thread
+                DispatchQueue.main.async {
+                    print("Cleaned up \(oldModels.count) old models")
+                }
+                
+            } catch {
+                DispatchQueue.main.async {
+                    print("Cleanup failed: \(error)")
+                }
+            }
         }
     }
     
@@ -53,7 +102,7 @@ class ClipboardManager: ObservableObject {
         
         if currentChangeCount != lastChangeCount {
             lastChangeCount = currentChangeCount
-            
+            // TODO: What about super formatted text?
             if let string = pasteboard.string(forType: .string), !string.isEmpty {
                 addClipboardItem(content: string, type: .text)
             } else if let image = pasteboard.readObjects(forClasses: [NSImage.self], options: nil)?.first as? NSImage {
@@ -63,21 +112,31 @@ class ClipboardManager: ObservableObject {
     }
     
     private func addClipboardItem(content: String, type: ClipboardItemType, image: NSImage? = nil) {
-        // TODO: Avoid duplicates
-//        if let first = clipboardHistory.first, first.content == content {
-//            return
-//        }
-        
+        if content != "Image" && doesItemExist(newContent: content) {
+            return
+        }
+
         let item = ClipboardItem(content: content, type: type, image: image)
         context.insert(item)
         
-        // TODO: Garbage collection!
-        // Keep only last 50 items
-//        if clipboardHistory.count > 50 {
-//            clipboardHistory.removeLast()
-//        }
     }
     
+    // TODO: Handle image as well
+    private func doesItemExist(newContent: String) -> Bool {
+        let predicate = #Predicate<ClipboardItem> { item in
+            item.content == newContent
+        }
+        
+        let descriptor = FetchDescriptor<ClipboardItem>(predicate: predicate)
+        let result = try? context.fetch(descriptor)
+        
+        if let result = result {
+            return !result.isEmpty
+        }
+        return false
+    }
+    
+    // TODO: If copy, we could hash it for easiest content
     func copyToClipboard(_ item: ClipboardItem) {
         pasteboard.clearContents()
         
@@ -90,7 +149,11 @@ class ClipboardManager: ObservableObject {
             }
         }
         
+        // move item to the top by setting it to current date
+        item.timestamp = Date.now
+        
         // TODO: Move item to top of history?
+        
 //        if let index = clipboardHistory.firstIndex(where: { $0.id == item.id }) {
 //            let movedItem = clipboardHistory.remove(at: index)
 //            clipboardHistory.insert(movedItem, at: 0)
