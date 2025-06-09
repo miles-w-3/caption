@@ -65,6 +65,7 @@
 		935049842DE7D566001E7A72 /* ClipboardItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClipboardItem.swift; sourceTree = "<group>"; };
 		935049872DE7D9ED001E7A72 /* ClipboardView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClipboardView.swift; sourceTree = "<group>"; };
 		93D9A2792DF3DCE5003E70CC /* TagsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagsView.swift; sourceTree = "<group>"; };
+		93D9A27C2DF69EF6003E70CC /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -99,6 +100,7 @@
 		9350493E2DE6C547001E7A72 = {
 			isa = PBXGroup;
 			children = (
+				93D9A27C2DF69EF6003E70CC /* LICENSE */,
 				93D9A27B2DF69AF9003E70CC /* docs */,
 				935049492DE6C547001E7A72 /* caption */,
 				9350495D2DE6C549001E7A72 /* captionTests */,
