@@ -8,7 +8,6 @@ Caption is a menu bar app which can be used to categorize useful items from your
 - Searchable text enxtries and tags
 - Cleanup of old, untagged entries
 
-
 ## Future Additions
 1. Add the ability to manually import entries, instead of just relying on clipboard
 2. Settings menu for more in-depth configuration
