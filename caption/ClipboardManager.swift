@@ -34,13 +34,14 @@ class ClipboardManager: ObservableObject {
     init(context: ModelContext) {
         self.context = context
         lastChangeCount = pasteboard.changeCount
+        let initialClean = checkForOldModels(setContext: nil)
+        print("On Start: cleaned \(initialClean) old models")
         startClipboardMonitoring()
         startGarbageCollection()
     }
 
     
     private func startClipboardMonitoring() {
-        print("Beginning clipboard monitoring. Does this happen twice?")
         guard clipboardTimer == nil else { return }
         clipboardTimer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { _ in
             self.checkClipboard()
@@ -54,6 +55,7 @@ class ClipboardManager: ObservableObject {
     }
     
     private func startGarbageCollection() {
+        print("Beginning watching for old entries")
         cleanupTimer = Timer.scheduledTimer(withTimeInterval: 3600, repeats: true) { [weak self] _ in
             self?.performCleanupInBackground()
         }
@@ -67,34 +69,47 @@ class ClipboardManager: ObservableObject {
             // Create background context for thread-safety
             let backgroundContext = ModelContext(self.context.container)
             
-            do {
-                let thirtyDaysAgo = Calendar.current.date(byAdding: .day, value: -30, to: Date()) ?? Date()
-                
-                let descriptor = FetchDescriptor<ClipboardItem>(
-                    predicate: #Predicate { model in
-                        model.timestamp < thirtyDaysAgo && model.tagValues.isEmpty
-                    }
-                )
-                
-                let oldModels = try backgroundContext.fetch(descriptor)
-                
-                for model in oldModels {
-                    backgroundContext.delete(model)
-                }
-                
-                try backgroundContext.save()
-                
-                // Only UI updates need main thread
-                DispatchQueue.main.async {
-                    print("Cleaned up \(oldModels.count) old models")
-                }
-                
-            } catch {
-                DispatchQueue.main.async {
-                    print("Cleanup failed: \(error)")
-                }
+            let cleanedUpCount = self.checkForOldModels(setContext: backgroundContext)
+            
+            // Only UI updates need main thread
+            DispatchQueue.main.async {
+                print("Cleaned up \(cleanedUpCount) old models")
             }
         }
+    }
+    
+    // Check for old models and remove from context. Processes running on different thread won't directly use this context
+    private func checkForOldModels(setContext: ModelContext?) -> Int {
+        var context: ModelContext!
+        if setContext != nil {
+            context = setContext
+        } else {
+            context = self.context
+        }
+        
+        var cleanedUpCount = 0
+        
+        let thirtyDaysAgo = Calendar.current.date(byAdding: .day, value: -30, to: Date()) ?? Date()
+        
+        
+        print("\(thirtyDaysAgo) vs \(Date())")
+        let descriptor = FetchDescriptor<ClipboardItem>(
+            predicate: #Predicate { model in
+                model.timestamp < thirtyDaysAgo && !model.hasTags
+            }
+        )
+        do {
+            let oldModels = try context.fetch(descriptor)
+            cleanedUpCount = oldModels.count
+            for model in oldModels {
+                context.delete(model)
+            }
+        } catch {
+            print("Failed to get old models: \(error)")
+        }
+        
+        return cleanedUpCount
+
     }
     
     private func checkClipboard() {

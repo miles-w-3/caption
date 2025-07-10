@@ -16,6 +16,8 @@ class ClipboardItem {
     var content: String
     var type: ClipboardItemType
     var timestamp: Date
+    var hasTags = false
+    // Note: Need to track this for cleanup - can't query size of tags inside a predicate
     private var tags: [ItemTag]
     // Note: NSImage isn't Codable, so we store as Data
     private var imageData: Data?
@@ -30,8 +32,10 @@ class ClipboardItem {
         return self.tags.map{ $0.value }
     }
     
+    // NOTE: This is currently used because of the underlying type difference. Changed in the future, make sure to propagate hasTags tracker
     func setTags(_ tags: [String]) {
         self.tags = tags.map{ ItemTag(value: $0) }
+        self.hasTags = !self.tags.isEmpty
     }
     
     init(content: String, type: ClipboardItemType, image: NSImage? = nil, tags: [String] = []) {
